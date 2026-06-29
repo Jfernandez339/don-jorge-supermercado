@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Don Jorge Supermercado — Supermercado en línea</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:       #f5f7fa;
+  --white:    #ffffff;
+  --border:   #e2e8f0;
+  --text:     #1a202c;
+  --muted:    #718096;
+  --light:    #edf2f7;
+  --green:    #2f855a;
+  --green-l:  #c6f6d5;
+  --green-b:  #38a169;
+  --red:      #c53030;
+  --red-l:    #fff5f5;
+  --accent:   #2b6cb0;
+  --accent-l: #ebf8ff;
+  --yellow:   #d69e2e;
+  --yellow-l: #fefcbf;
+  --sans:     'Plus Jakarta Sans', sans-serif;
+  --radius:   8px;
+  --shadow:   0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.10);
+}
+
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── TOPBAR ── */
+.topbar{background:#1a3a2a;color:#fff;font-size:.75rem;text-align:center;padding:.4rem 1rem;letter-spacing:.3px}
+.topbar span{color:#68d391}
+
+/* ── HEADER ── */
+header{
+  background:var(--white);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+  box-shadow:var(--shadow);
+}
+.header-inner{
+  max-width:1200px;margin:0 auto;
+  padding:.9rem 1.5rem;
+  display:flex;align-items:center;gap:1rem;
+}
+.logo{
+  font-size:1.4rem;font-weight:800;color:var(--green);
+  white-space:nowrap;text-decoration:none;
+  display:flex;align-items:center;gap:.35rem;
+}
+.logo-icon{font-size:1.3rem}
+.logo span{color:var(--text)}
+
+.search-bar{
+  flex:1;display:flex;max-width:560px;
+  border:2px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;transition:border-color .15s;
+}
+.search-bar:focus-within{border-color:var(--green-b)}
+.search-bar input{
+  flex:1;border:none;outline:none;padding:.55rem 1rem;
+  font-family:var(--sans);font-size:.9rem;color:var(--text);background:var(--white);
+}
+.search-bar button{
+  background:var(--green-b);border:none;color:#fff;
+  padding:.55rem 1rem;cursor:pointer;font-size:1rem;
+  transition:background .15s;
+}
+.search-bar button:hover{background:var(--green)}
+
+.header-actions{display:flex;align-items:center;gap:.5rem;margin-left:auto}
+
+.cart-btn{
+  position:relative;background:var(--green-b);color:#fff;
+  border:none;border-radius:var(--radius);padding:.55rem 1.1rem;
+  font-family:var(--sans);font-size:.88rem;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;gap:.5rem;
+  transition:background .15s;white-space:nowrap;
+}
+.cart-btn:hover{background:var(--green)}
+.cart-count{
+  background:#fff;color:var(--green);
+  font-size:.7rem;font-weight:700;
+  min-width:18px;height:18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ── CATEGORÍAS ── */
+.cats-bar{background:var(--white);border-bottom:1px solid var(--border)}
+.cats-inner{
+  max-width:1200px;margin:0 auto;padding:.6rem 1.5rem;
+  display:flex;gap:.5rem;overflow-x:auto;
+  scrollbar-width:none;
+}
+.cats-inner::-webkit-scrollbar{display:none}
+.cat-pill{
+  background:none;border:1px solid var(--border);border-radius:20px;
+  padding:.3rem .9rem;font-size:.8rem;font-weight:500;color:var(--muted);
+  cursor:pointer;white-space:nowrap;transition:all .15s;font-family:var(--sans);
+}
+.cat-pill:hover{border-color:var(--green-b);color:var(--green-b)}
+.cat-pill.active{background:var(--green-b);border-color:var(--green-b);color:#fff}
+
+/* ── HERO ── */
+.hero{
+  background:linear-gradient(135deg,#1a3a2a 0%,#2f6b44 100%);
+  color:#fff;padding:2.5rem 1.5rem;text-align:center;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'🥬🥕🍎🥦🍊🥚🧀🍗';
+  position:absolute;bottom:-10px;left:0;right:0;
+  font-size:2.5rem;opacity:.12;letter-spacing:1.5rem;
+  white-space:nowrap;
+}
+.hero h1{font-size:clamp(1.5rem,4vw,2.4rem);font-weight:800;margin-bottom:.5rem}
+.hero p{font-size:.95rem;opacity:.85;margin-bottom:1.2rem}
+.hero-badge{
+  display:inline-block;background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.3);
+  border-radius:20px;padding:.3rem 1rem;font-size:.82rem;font-weight:600;
+}
+
+/* ── LAYOUT PRINCIPAL ── */
+.main-wrap{max-width:1200px;margin:0 auto;padding:1.5rem;display:flex;gap:1.5rem;align-items:flex-start}
+
+/* ── SIDEBAR CATEGORÍAS ── */
+.sidebar{width:210px;flex-shrink:0}
+.sidebar-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:1rem}
+.sidebar-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:.8rem}
+.sidebar-cat{
+  display:flex;align-items:center;gap:.6rem;
+  padding:.5rem .6rem;border-radius:6px;cursor:pointer;
+  font-size:.88rem;color:var(--text);transition:background .12s;border:none;background:none;
+  width:100%;text-align:left;font-family:var(--sans);
+}
+.sidebar-cat:hover{background:var(--light)}
+.sidebar-cat.active{background:var(--green-l);color:var(--green);font-weight:600}
+.sidebar-cat-icon{font-size:1rem;width:22px;text-align:center}
+.sidebar-count{margin-left:auto;font-size:.72rem;color:var(--muted)}
+
+/* ── PRODUCTOS ── */
+.productos-wrap{flex:1;min-width:0}
+.productos-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+.productos-titulo{font-size:1rem;font-weight:700}
+.productos-count{font-size:.82rem;color:var(--muted)}
+.sort-select{
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:.4rem .7rem;font-size:.82rem;color:var(--text);
+  font-family:var(--sans);outline:none;background:var(--white);cursor:pointer;
+}
+
+.productos-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:1rem;
+}
+
+.producto-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+  transition:box-shadow .15s,transform .15s;
+  display:flex;flex-direction:column;
+}
+.producto-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+
+.producto-img{
+  background:var(--light);height:140px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:3.5rem;position:relative;
+}
+.badge-oferta{
+  position:absolute;top:.5rem;left:.5rem;
+  background:#c53030;color:#fff;font-size:.65rem;font-weight:700;
+  padding:.15rem .45rem;border-radius:4px;
+}
+.badge-nuevo{
+  position:absolute;top:.5rem;left:.5rem;
+  background:var(--accent);color:#fff;font-size:.65rem;font-weight:700;
+  padding:.15rem .45rem;border-radius:4px;
+}
+
+.producto-body{padding:.8rem;flex:1;display:flex;flex-direction:column;gap:.3rem}
+.producto-cat{font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600}
+.producto-nombre{font-size:.88rem;font-weight:600;color:var(--text);line-height:1.3}
+.producto-unidad{font-size:.75rem;color:var(--muted)}
+
+.precio-wrap{display:flex;align-items:baseline;gap:.4rem;margin-top:.2rem}
+.precio-actual{font-size:1.1rem;font-weight:800;color:var(--green)}
+.precio-antes{font-size:.78rem;color:var(--muted);text-decoration:line-through}
+
+.btn-agregar{
+  margin-top:auto;background:var(--green-b);color:#fff;
+  border:none;border-radius:6px;padding:.5rem;
+  font-family:var(--sans);font-size:.82rem;font-weight:600;
+  cursor:pointer;transition:background .15s;width:100%;
+  display:flex;align-items:center;justify-content:center;gap:.4rem;
+}
+.btn-agregar:hover{background:var(--green)}
+.btn-agregar.en-carrito{background:var(--light);color:var(--green);border:1.5px solid var(--green-b)}
+
+.cantidad-ctrl{
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  margin-top:auto;
+}
+.qty-btn{
+  width:30px;height:30px;border-radius:6px;border:1.5px solid var(--border);
+  background:var(--white);color:var(--text);font-size:1rem;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .12s;
+}
+.qty-btn:hover{background:var(--light)}
+.qty-num{font-size:.9rem;font-weight:700;min-width:24px;text-align:center}
+
+/* ── CARRITO DRAWER ── */
+.overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;
+}
+.overlay.abierto{display:block}
+
+.carrito-drawer{
+  position:fixed;top:0;right:-420px;width:420px;max-width:100vw;
+  height:100vh;background:var(--white);z-index:201;
+  display:flex;flex-direction:column;
+  box-shadow:-4px 0 20px rgba(0,0,0,.12);
+  transition:right .25s cubic-bezier(.4,0,.2,1);
+}
+.carrito-drawer.abierto{right:0}
+
+.drawer-header{
+  padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.drawer-titulo{font-size:1.05rem;font-weight:700}
+.drawer-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--muted);line-height:1}
+.drawer-close:hover{color:var(--text)}
+
+.drawer-body{flex:1;overflow-y:auto;padding:1rem 1.5rem}
+
+.carrito-empty{
+  text-align:center;padding:3rem 1rem;color:var(--muted);
+}
+.carrito-empty .empty-icon{font-size:3rem;margin-bottom:.8rem}
+.carrito-empty p{font-size:.9rem}
+
+.carrito-item{
+  display:flex;gap:.9rem;padding:.9rem 0;
+  border-bottom:1px solid var(--border);align-items:center;
+}
+.carrito-item:last-child{border-bottom:none}
+.ci-icon{
+  width:52px;height:52px;background:var(--light);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;
+}
+.ci-info{flex:1;min-width:0}
+.ci-nombre{font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-precio{font-size:.8rem;color:var(--muted);margin-top:.15rem}
+.ci-ctrl{display:flex;align-items:center;gap:.4rem;margin-top:.4rem}
+.ci-qty-btn{
+  width:24px;height:24px;border-radius:4px;border:1px solid var(--border);
+  background:var(--white);font-size:.85rem;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.ci-qty-btn:hover{background:var(--light)}
+.ci-qty{font-size:.82rem;font-weight:700;min-width:20px;text-align:center}
+.ci-eliminar{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;margin-left:auto;padding:.2rem}
+.ci-eliminar:hover{color:var(--red)}
+.ci-subtotal{font-size:.85rem;font-weight:700;color:var(--green);white-space:nowrap}
+
+.drawer-footer{
+  padding:1.2rem 1.5rem;border-top:1px solid var(--border);
+  flex-shrink:0;background:var(--white);
+}
+.resumen-linea{display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:.4rem;color:var(--muted)}
+.resumen-total{display:flex;justify-content:space-between;font-size:1.05rem;font-weight:800;margin:1rem 0;border-top:1px solid var(--border);padding-top:.8rem}
+.btn-checkout{
+  width:100%;background:var(--green-b);color:#fff;border:none;
+  border-radius:var(--radius);padding:.8rem;
+  font-family:var(--sans);font-size:.95rem;font-weight:700;
+  cursor:pointer;transition:background .15s;
+}
+.btn-checkout:hover{background:var(--green)}
+.btn-vaciar{
+  width:100%;background:none;border:1px solid var(--border);color:var(--muted);
+  border-radius:var(--radius);padding:.55rem;margin-top:.5rem;
+  font-family:var(--sans);font-size:.82rem;cursor:pointer;transition:all .15s;
+}
+.btn-vaciar:hover{border-color:var(--red);color:var(--red)}
+
+/* ── MODAL CHECKOUT ── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);
+  z-index:300;align-items:center;justify-content:center;padding:1rem;
+}
+.modal-overlay.abierto{display:flex}
+.modal{
+  background:var(--white);border-radius:12px;width:100%;max-width:440px;
+  padding:2rem;box-shadow:0 20px 60px rgba(0,0,0,.2);
+  text-align:center;
+}
+.modal-icon{font-size:3rem;margin-bottom:.8rem}
+.modal h2{font-size:1.3rem;font-weight:800;margin-bottom:.4rem}
+.modal p{font-size:.9rem;color:var(--muted);margin-bottom:1.5rem}
+.modal-total{font-size:1.5rem;font-weight:800;color:var(--green);margin-bottom:1.5rem}
+.modal-btn{
+  width:100%;background:var(--green-b);color:#fff;border:none;
+  border-radius:var(--radius);padding:.8rem;
+  font-family:var(--sans);font-size:.95rem;font-weight:700;cursor:pointer;
+  transition:background .15s;
+}
+.modal-btn:hover{background:var(--green)}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#1a202c;color:#fff;border-radius:var(--radius);
+  padding:.7rem 1.3rem;font-size:.85rem;font-weight:500;
+  z-index:400;opacity:0;transition:opacity .2s,transform .2s;white-space:nowrap;
+  pointer-events:none;
+}
+.toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── FOOTER ── */
+footer{background:#1a3a2a;color:rgba(255,255,255,.7);text-align:center;padding:1.5rem;font-size:.82rem;margin-top:3rem}
+footer strong{color:#68d391}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .sidebar{display:none}
+  .main-wrap{padding:1rem}
+  .hero{padding:1.5rem 1rem}
+  .carrito-drawer{width:100vw}
+}
+@media(max-width:480px){
+  .header-inner{flex-wrap:wrap}
+  .search-bar{order:3;width:100%;max-width:100%}
+  .productos-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">🚚 Envío gratis en pedidos mayores a <span>₡15,000</span> · Entrega el mismo día</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo"><span class="logo-icon">🛒</span>Don Jorge <span>Supermercado</span></a>
+    <div class="search-bar">
+      <input type="text" id="buscador" placeholder="Buscar productos, marcas..." oninput="buscar(this.value)"/>
+      <button>🔍</button>
+    </div>
+    <div class="header-actions">
+      <button class="cart-btn" onclick="toggleCarrito()">
+        🛒 Carrito <span class="cart-count" id="cart-count">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- CATEGORÍAS MÓVIL -->
+<div class="cats-bar" id="cats-bar-mobile"></div>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Todo lo que necesitás, en un solo lugar</h1>
+  <p>Frutas frescas, lácteos, carnes y mucho más con entrega a domicilio</p>
+  <span class="hero-badge">🏷 Ofertas de la semana disponibles</span>
+</div>
+
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-title">Categorías</div>
+      <div id="sidebar-cats"></div>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Filtrar precio</div>
+      <div style="font-size:.82rem;color:var(--muted);margin-bottom:.5rem">Hasta: <strong id="precio-label" style="color:var(--text)">₡10,000</strong></div>
+      <input type="range" id="precio-range" min="500" max="10000" value="10000" step="100"
+        style="width:100%;accent-color:var(--green-b)"
+        oninput="filtrarPrecio(this.value)"/>
+    </div>
+  </aside>
+
+  <!-- PRODUCTOS -->
+  <div class="productos-wrap">
+    <div class="productos-header">
+      <div>
+        <div class="productos-titulo" id="titulo-seccion">Todos los productos</div>
+        <div class="productos-count" id="count-productos"></div>
+      </div>
+      <select class="sort-select" onchange="ordenar(this.value)">
+        <option value="default">Ordenar: Relevancia</option>
+        <option value="precio-asc">Precio: menor a mayor</option>
+        <option value="precio-desc">Precio: mayor a menor</option>
+        <option value="nombre">Nombre A–Z</option>
+      </select>
+    </div>
+    <div class="productos-grid" id="productos-grid"></div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 <strong>Don Jorge Supermercado</strong> · San José, Costa Rica · Sitio desarrollado por <strong>Jorge Fernández</strong></p>
+</footer>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="cerrarCarrito()"></div>
+
+<!-- CARRITO DRAWER -->
+<div class="carrito-drawer" id="carrito-drawer">
+  <div class="drawer-header">
+    <div class="drawer-titulo">🛒 Tu carrito</div>
+    <button class="drawer-close" onclick="cerrarCarrito()">✕</button>
+  </div>
+  <div class="drawer-body" id="drawer-body"></div>
+  <div class="drawer-footer" id="drawer-footer"></div>
+</div>
+
+<!-- MODAL CHECKOUT -->
+<div class="modal-overlay" id="modal-checkout">
+  <div class="modal">
+    <div class="modal-icon">✅</div>
+    <h2>¡Pedido confirmado!</h2>
+    <p>Tu pedido fue recibido y está siendo procesado. Te avisaremos cuando esté en camino.</p>
+    <div class="modal-total" id="modal-total"></div>
+    <button class="modal-btn" onclick="cerrarCheckout()">Volver a la tienda</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===================== DATOS =====================
+const categorias = [
+  { id:'todos',    label:'Todos',       icon:'🏪' },
+  { id:'frutas',   label:'Frutas',      icon:'🍎' },
+  { id:'verduras', label:'Verduras',    icon:'🥦' },
+  { id:'lacteos',  label:'Lácteos',     icon:'🧀' },
+  { id:'carnes',   label:'Carnes',      icon:'🍗' },
+  { id:'panaderia',label:'Panadería',   icon:'🍞' },
+  { id:'bebidas',  label:'Bebidas',     icon:'🧃' },
+  { id:'limpieza', label:'Limpieza',    icon:'🧴' },
+];
+
+const productos = [
+  { id:1,  nombre:'Manzana Roja',        cat:'frutas',    precio:890,  antes:null,  icon:'🍎', unidad:'x kg',   badge:'nuevo' },
+  { id:2,  nombre:'Banano Cavendish',    cat:'frutas',    precio:650,  antes:null,  icon:'🍌', unidad:'x racimo',badge:null },
+  { id:3,  nombre:'Fresas Frescas',      cat:'frutas',    precio:2490, antes:2990,  icon:'🍓', unidad:'250 g',  badge:'oferta' },
+  { id:4,  nombre:'Naranja Navel',       cat:'frutas',    precio:750,  antes:null,  icon:'🍊', unidad:'x kg',   badge:null },
+  { id:5,  nombre:'Brócoli',             cat:'verduras',  precio:990,  antes:1200,  icon:'🥦', unidad:'x unidad',badge:'oferta' },
+  { id:6,  nombre:'Zanahoria',           cat:'verduras',  precio:580,  antes:null,  icon:'🥕', unidad:'x kg',   badge:null },
+  { id:7,  nombre:'Tomate Cherry',       cat:'verduras',  precio:1350, antes:null,  icon:'🍅', unidad:'250 g',  badge:'nuevo' },
+  { id:8,  nombre:'Lechuga Romana',      cat:'verduras',  precio:820,  antes:null,  icon:'🥬', unidad:'x unidad',badge:null },
+  { id:9,  nombre:'Queso Turrialba',     cat:'lacteos',   precio:3200, antes:null,  icon:'🧀', unidad:'400 g',  badge:null },
+  { id:10, nombre:'Leche Dos Pinos',     cat:'lacteos',   precio:1190, antes:1390,  icon:'🥛', unidad:'1 litro',badge:'oferta' },
+  { id:11, nombre:'Yogur Natural',       cat:'lacteos',   precio:890,  antes:null,  icon:'🫙', unidad:'500 g',  badge:null },
+  { id:12, nombre:'Mantequilla',         cat:'lacteos',   precio:1450, antes:null,  icon:'🧈', unidad:'250 g',  badge:null },
+  { id:13, nombre:'Pechuga de Pollo',    cat:'carnes',    precio:3890, antes:4200,  icon:'🍗', unidad:'x kg',   badge:'oferta' },
+  { id:14, nombre:'Carne Molida',        cat:'carnes',    precio:4200, antes:null,  icon:'🥩', unidad:'x kg',   badge:null },
+  { id:15, nombre:'Chorizo Artesanal',   cat:'carnes',    precio:2100, antes:null,  icon:'🌭', unidad:'300 g',  badge:'nuevo' },
+  { id:16, nombre:'Filete de Tilapia',   cat:'carnes',    precio:3500, antes:null,  icon:'🐟', unidad:'x kg',   badge:null },
+  { id:17, nombre:'Pan Baguette',        cat:'panaderia', precio:780,  antes:null,  icon:'🥖', unidad:'x unidad',badge:null },
+  { id:18, nombre:'Pan Integral',        cat:'panaderia', precio:1250, antes:null,  icon:'🍞', unidad:'x paquete',badge:'nuevo' },
+  { id:19, nombre:'Croissant',           cat:'panaderia', precio:550,  antes:650,   icon:'🥐', unidad:'x unidad',badge:'oferta' },
+  { id:20, nombre:'Agua Cristal 1.5L',   cat:'bebidas',   precio:690,  antes:null,  icon:'💧', unidad:'1.5 litros',badge:null },
+  { id:21, nombre:'Jugo de Naranja',     cat:'bebidas',   precio:1590, antes:1890,  icon:'🧃', unidad:'1 litro',badge:'oferta' },
+  { id:22, nombre:'Café Britt 250g',     cat:'bebidas',   precio:4200, antes:null,  icon:'☕', unidad:'250 g',  badge:null },
+  { id:23, nombre:'Detergente Ariel',    cat:'limpieza',  precio:3100, antes:3500,  icon:'🧴', unidad:'900 g',  badge:'oferta' },
+  { id:24, nombre:'Jabón de Trastes',    cat:'limpieza',  precio:890,  antes:null,  icon:'🫧', unidad:'500 ml', badge:null },
+];
+
+// ===================== ESTADO =====================
+let carrito = [];
+let catActiva = 'todos';
+let ordenActual = 'default';
+let precioMax = 10000;
+let busqueda = '';
+
+// ===================== RENDER CATEGORÍAS =====================
+function renderCats() {
+  // Sidebar
+  const sidebar = document.getElementById('sidebar-cats');
+  sidebar.innerHTML = categorias.map(c => {
+    const count = c.id === 'todos' ? productos.length : productos.filter(p => p.cat === c.id).length;
+    return `<button class="sidebar-cat ${catActiva===c.id?'active':''}" onclick="setCat('${c.id}')">
+      <span class="sidebar-cat-icon">${c.icon}</span>${c.label}<span class="sidebar-count">${count}</span>
+    </button>`;
+  }).join('');
+
+  // Mobile pills
+  const mobile = document.getElementById('cats-bar-mobile');
+  mobile.innerHTML = `<div class="cats-inner">${categorias.map(c =>
+    `<button class="cat-pill ${catActiva===c.id?'active':''}" onclick="setCat('${c.id}')">${c.icon} ${c.label}</button>`
+  ).join('')}</div>`;
+}
+
+function setCat(id) {
+  catActiva = id;
+  document.getElementById('titulo-seccion').textContent = categorias.find(c=>c.id===id)?.label || 'Todos los productos';
+  renderCats();
+  renderProductos();
+}
+
+// ===================== RENDER PRODUCTOS =====================
+function getProductosFiltrados() {
+  let lista = [...productos];
+  if (catActiva !== 'todos') lista = lista.filter(p => p.cat === catActiva);
+  if (busqueda) lista = lista.filter(p => p.nombre.toLowerCase().includes(busqueda.toLowerCase()));
+  lista = lista.filter(p => p.precio <= precioMax);
+  if (ordenActual === 'precio-asc') lista.sort((a,b) => a.precio - b.precio);
+  else if (ordenActual === 'precio-desc') lista.sort((a,b) => b.precio - a.precio);
+  else if (ordenActual === 'nombre') lista.sort((a,b) => a.nombre.localeCompare(b.nombre));
+  return lista;
+}
+
+function getCantidad(id) {
+  return carrito.find(i => i.id === id)?.qty || 0;
+}
+
+function renderProductos() {
+  const lista = getProductosFiltrados();
+  const grid = document.getElementById('productos-grid');
+  document.getElementById('count-productos').textContent = lista.length + ' productos';
+
+  if (!lista.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--muted)">
+      <div style="font-size:2.5rem;margin-bottom:.8rem">🔍</div>
+      <p>No encontramos productos con ese criterio.</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = lista.map(p => {
+    const qty = getCantidad(p.id);
+    const badgeHtml = p.badge === 'oferta'
+      ? `<span class="badge-oferta">OFERTA</span>`
+      : p.badge === 'nuevo' ? `<span class="badge-nuevo">NUEVO</span>` : '';
+    const precioAntes = p.antes ? `<span class="precio-antes">₡${p.antes.toLocaleString()}</span>` : '';
+    const ctrl = qty > 0
+      ? `<div class="cantidad-ctrl">
+          <button class="qty-btn" onclick="cambiarCantidad(${p.id},-1)">−</button>
+          <span class="qty-num">${qty}</span>
+          <button class="qty-btn" onclick="cambiarCantidad(${p.id},1)">+</button>
+        </div>`
+      : `<button class="btn-agregar" onclick="agregar(${p.id})">+ Agregar</button>`;
+    return `
+      <div class="producto-card">
+        <div class="producto-img">${p.icon}${badgeHtml}</div>
+        <div class="producto-body">
+          <div class="producto-cat">${categorias.find(c=>c.id===p.cat)?.label||''}</div>
+          <div class="producto-nombre">${p.nombre}</div>
+          <div class="producto-unidad">${p.unidad}</div>
+          <div class="precio-wrap">
+            <span class="precio-actual">₡${p.precio.toLocaleString()}</span>
+            ${precioAntes}
+          </div>
+          ${ctrl}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ===================== CARRITO =====================
+function agregar(id) {
+  const item = carrito.find(i => i.id === id);
+  if (item) item.qty++;
+  else {
+    const p = productos.find(p => p.id === id);
+    carrito.push({ id, nombre:p.nombre, precio:p.precio, icon:p.icon, qty:1 });
+  }
+  actualizarCarrito();
+  toast('🛒 ' + productos.find(p=>p.id===id).nombre + ' agregado');
+}
+
+function cambiarCantidad(id, delta) {
+  const item = carrito.find(i => i.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) carrito = carrito.filter(i => i.id !== id);
+  actualizarCarrito();
+}
+
+function eliminarItem(id) {
+  carrito = carrito.filter(i => i.id !== id);
+  actualizarCarrito();
+}
+
+function vaciarCarrito() {
+  if (!carrito.length) return;
+  if (!confirm('¿Vaciar el carrito?')) return;
+  carrito = [];
+  actualizarCarrito();
+}
+
+function getTotal() { return carrito.reduce((s,i) => s + i.precio * i.qty, 0); }
+function getTotalItems() { return carrito.reduce((s,i) => s + i.qty, 0); }
+
+function actualizarCarrito() {
+  document.getElementById('cart-count').textContent = getTotalItems();
+  renderProductos();
+  renderDrawer();
+}
+
+function renderDrawer() {
+  const body = document.getElementById('drawer-body');
+  const footer = document.getElementById('drawer-footer');
+
+  if (!carrito.length) {
+    body.innerHTML = `<div class="carrito-empty">
+      <div class="empty-icon">🛒</div>
+      <p>Tu carrito está vacío.<br/>Agregá productos para comenzar.</p>
+    </div>`;
+    footer.innerHTML = '';
+    return;
+  }
+
+  body.innerHTML = carrito.map(i => `
+    <div class="carrito-item">
+      <div class="ci-icon">${i.icon}</div>
+      <div class="ci-info">
+        <div class="ci-nombre">${i.nombre}</div>
+        <div class="ci-precio">₡${i.precio.toLocaleString()} c/u</div>
+        <div class="ci-ctrl">
+          <button class="ci-qty-btn" onclick="cambiarCantidad(${i.id},-1)">−</button>
+          <span class="ci-qty">${i.qty}</span>
+          <button class="ci-qty-btn" onclick="cambiarCantidad(${i.id},1)">+</button>
+          <button class="ci-eliminar" onclick="eliminarItem(${i.id})">🗑</button>
+        </div>
+      </div>
+      <div class="ci-subtotal">₡${(i.precio*i.qty).toLocaleString()}</div>
+    </div>`).join('');
+
+  const total = getTotal();
+  const envio = total >= 15000 ? 0 : 1500;
+  footer.innerHTML = `
+    <div class="resumen-linea"><span>Subtotal (${getTotalItems()} productos)</span><span>₡${total.toLocaleString()}</span></div>
+    <div class="resumen-linea"><span>Envío</span><span>${envio === 0 ? '<span style="color:var(--green);font-weight:600">Gratis 🎉</span>' : '₡'+envio.toLocaleString()}</span></div>
+    <div class="resumen-total"><span>Total</span><span>₡${(total+envio).toLocaleString()}</span></div>
+    <button class="btn-checkout" onclick="checkout()">Confirmar pedido →</button>
+    <button class="btn-vaciar" onclick="vaciarCarrito()">Vaciar carrito</button>`;
+}
+
+// ===================== DRAWER =====================
+function toggleCarrito() {
+  const d = document.getElementById('carrito-drawer');
+  const o = document.getElementById('overlay');
+  const abierto = d.classList.contains('abierto');
+  if (abierto) cerrarCarrito();
+  else { renderDrawer(); d.classList.add('abierto'); o.classList.add('abierto'); }
+}
+function cerrarCarrito() {
+  document.getElementById('carrito-drawer').classList.remove('abierto');
+  document.getElementById('overlay').classList.remove('abierto');
+}
+
+// ===================== CHECKOUT =====================
+function checkout() {
+  const total = getTotal();
+  const envio = total >= 15000 ? 0 : 1500;
+  document.getElementById('modal-total').textContent = '₡' + (total+envio).toLocaleString();
+  document.getElementById('modal-checkout').classList.add('abierto');
+  cerrarCarrito();
+}
+function cerrarCheckout() {
+  document.getElementById('modal-checkout').classList.remove('abierto');
+  carrito = [];
+  actualizarCarrito();
+}
+
+// ===================== FILTROS =====================
+function buscar(val) { busqueda = val; renderProductos(); }
+function ordenar(val) { ordenActual = val; renderProductos(); }
+function filtrarPrecio(val) {
+  precioMax = parseInt(val);
+  document.getElementById('precio-label').textContent = '₡' + parseInt(val).toLocaleString();
+  renderProductos();
+}
+
+// ===================== TOAST =====================
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('visible');
+  setTimeout(() => t.classList.remove('visible'), 2200);
+}
+
+// ===================== INIT =====================
+renderCats();
+renderProductos();
+</script>
+</body>
+</html>
